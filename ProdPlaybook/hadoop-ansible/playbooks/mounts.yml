@@ -1,0 +1,84 @@
+---
+
+
+#
+#- name: "** slavenode ** ensure hadoop volumes are mounted"
+#  action: mount name={{ item }} src=LABEL='{{ item }}' fstype=ext4 opts=defaults,noatime,nodiratime state=mounted
+#  with_items:
+#    - /hadoop01
+#    - /hadoop02
+#    - /hadoop03
+#    - /hadoop04
+#    - /hadoop05
+#    - /hadoop06
+#    - /hadoop07
+#    - /hadoop08
+#    - /hadoop09
+#    - /hadoop10
+#    - /hadoop11
+#    - /hadoop12
+#  ignore_errors: yes
+#  tags: hadoop-vol-mounts
+#
+
+
+- name: "** nox.slavenode ** set hadoop directory ownership and permissions"
+  action: file path={{ item }} owner=hadoop group=hadoop mode=0755 state=directory
+  with_items:
+    - /hadoop/1
+    - /hadoop/2
+    - /hadoop/3
+    - /hadoop/4
+    - /hadoop/5
+    - /hadoop/6
+    - /hadoop/7
+    - /hadoop/8
+    - /hadoop/9
+    - /hadoop/10
+    - /hadoop/11
+    - /hadoop/12
+  ignore_errors: yes
+  tags: 
+    - hadoop-vol-dirs
+    - set-slavenode-mounts
+
+- name: "** nox.slavenode ** set hadoop data directory ownership and permissions"
+  action: file path={{ item }}/data owner=hadoop group=hadoop mode=0700 state=directory
+  with_items:
+    - /hadoop01
+    - /hadoop02
+    - /hadoop03
+    - /hadoop04
+    - /hadoop05
+    - /hadoop06
+    - /hadoop07
+    - /hadoop08
+    - /hadoop09
+    - /hadoop10
+    - /hadoop11
+    - /hadoop12
+  ignore_errors: yes
+  tags: 
+    - hadoop-data-dirs
+    - set-slavenode-mounts
+
+- name: "** nox.slavenode ** set hadoop scratch directory ownership and permissions"
+  action: file path={{ item }}/scratch owner=hadoop group=hadoop mode=0755 state=directory
+  with_items:
+    - /hadoop01
+    - /hadoop02
+    - /hadoop03
+    - /hadoop04
+    - /hadoop05
+    - /hadoop06
+    - /hadoop07
+    - /hadoop08
+    - /hadoop09
+    - /hadoop10
+    - /hadoop11
+    - /hadoop12
+  ignore_errors: yes
+  tags: 
+    - hadoop-scratch-dirs
+    - set-slavenode-mounts
+

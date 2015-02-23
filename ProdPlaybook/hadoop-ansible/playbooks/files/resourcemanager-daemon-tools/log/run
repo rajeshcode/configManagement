@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Give the hadoop user access
+setfacl -R -m u:hadoop:rwx supervise
+
+test -d main || install -o hadoop -d main
+
+exec setuidgid hadoop multilog s10485760 n500 ./main

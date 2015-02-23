@@ -1,0 +1,224 @@
+---
+
+- name: "** nox ** create directory for hdp hadoop config on slavenodes"
+  action: file path={{ item.name }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/etc/hdp', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox/hadoop', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox/hbase', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox/zookeeper', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox/pig', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox/hive', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox/oozie', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox/oozie-server', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/etc/hdp/nox/hcatalog', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+  when: "'slavenodes' in group_names"
+  tags: get-hadoop-config
+
+- name: "** nox ** create directory for hdp hadoop config on masternodes"
+  action: file path={{ item.name }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/etc/hdp', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox/hadoop', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox/hbase', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox/zookeeper', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox/pig', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox/hive', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox/oozie', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox/oozie-server', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '/ebay/hdp/nox/hcatalog', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+  when: "'masternodes' in group_names"
+  tags: get-hadoop-config
+
+- name: "** nox ** create link for hdp hadoop config directory on masternodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/ebay/hdp/nox', dest: '/etc/hdp/nox', owner: 'hadoop', group: 'hadoop' }
+  when: "'masternodes' in group_names"
+  tags: get-hadoop-config
+
+
+- name: "** nox ** ensure hadoop log directories are present on slavenodes"
+  action: file path={{ item.name }} owner=hadoop group=hadoop mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/var/log/hadoop', mode: '0755' }
+    - { name: '/var/log/hadoop/hadoop', mode: '0755' }
+    - { name: '/var/log/hadoop/hbase', mode: '0755' }
+    - { name: '/var/log/hadoop/zookeeper', mode: '0755' }
+    - { name: '/var/log/hadoop/hive', mode: '0775' }
+    - { name: '/var/log/hadoop/pig', mode: '0775' }
+    - { name: '/var/log/hadoop/oozie-server', mode: '0775' }
+    - { name: '/var/log/hadoop/oozie', mode: '0775' }
+    - { name: '/var/log/hadoop/hcatalog', mode: '0775' }
+  when: "'slavenodes' in group_names"
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+- name: "** nox ** ensure hadoop log directories are present on masternodes"
+  action: file path={{ item.name }} owner=hadoop group=hadoop mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/hadoop/logs', mode: '0755' }
+    - { name: '/hadoop/logs/hadoop', mode: '0755' }
+    - { name: '/hadoop/logs/hbase', mode: '0755' }
+    - { name: '/hadoop/logs/zookeeper', mode: '0755' }
+    - { name: '/hadoop/logs/hive', mode: '0775' }
+    - { name: '/hadoop/logs/pig', mode: '0775' }
+    - { name: '/hadoop/logs/oozie-server', mode: '0775' }
+    - { name: '/hadoop/logs/oozie', mode: '0775' }
+    - { name: '/hadoop/logs/hcatalog', mode: '0775' }
+  when: "'masternodes' in group_names"
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+- name: "** nox ** create link for hadoop ancillary log directories on slavenodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/log/hadoop/hadoop', dest: '/apache/hadoop/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/hbase', dest: '/apache/hbase/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/zookeeper', dest: '/apache/zookeeper/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/hive', dest: '/apache/hive/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/pig', dest: '/apache/pig/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/oozie-server', dest: '/apache/oozie-server/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/oozie', dest: '/apache/oozie/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/hcatalog', dest: '/apache/hcatalog/logs', owner: 'hadoop', group: 'hadoop' }
+  when: "'slavenodes' in group_names"
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+- name: "** nox ** create link for hadoop ancillary log directories on masternodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/hadoop/logs', dest: '/var/log/hadoop', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hadoop', dest: '/apache/hadoop/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hbase', dest: '/apache/hbase/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/zookeeper', dest: '/apache/zookeeper/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hive', dest: '/apache/hive/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/pig', dest: '/apache/pig/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/oozie-server', dest: '/apache/oozie-server/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/oozie', dest: '/apache/oozie/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hcatalog', dest: '/apache/hcatalog/logs', owner: 'hadoop', group: 'hadoop' }
+  when: "'masternodes' in group_names"
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+
+#
+# install config files
+#
+- name: "** nox ** check if old conf dir is present"
+  action: stat path=/apache/{{ item }}/conf
+  with_items:
+    - zookeeper
+    - hadoop
+    - hbase
+    - hive
+    - pig
+    - oozie
+    - oozie-server
+    - hcatalog
+  register: confdir
+  tags: 
+    - hadoop-conf-dir-check
+    - get-hadoop-config
+
+- name: "** nox ** rename old conf dir if present"
+  action: shell mv /apache/{{ item.item }}/conf /apache/{{ item.item }}/conf.BAK.$(date +%Y-%m-%d.%H%M%S)
+  with_items: confdir.results
+  when: item.stat.isdir is defined and item.stat.isdir == true
+  tags: 
+    - hadoop-conf-dir-check
+    - get-hadoop-config
+
+
+- name: "** nox ** install hadoop config on masternodes"
+  action: synchronize src=/var/lib/ansible/hadoop-ansible/playbooks/files/nox/{{ item.src }} dest=/ebay/hdp/nox/{{ item.dest }}
+  with_items:
+    - { src: 'zookeeper/conf/', dest: 'zookeeper/conf/' }
+    - { src: 'hadoop/conf/', dest: 'hadoop/conf/' }
+    - { src: 'hbase/conf/', dest: 'hbase/conf/' }
+    - { src: 'hive/conf/', dest: 'hive/conf/' }
+    - { src: 'pig/conf/', dest: 'pig/conf/' }
+    - { src: 'oozie/conf/', dest: 'oozie/conf/' }
+    - { src: 'oozie-server/conf/', dest: 'oozie-server/conf/' }
+    - { src: 'hcatalog/conf/', dest: 'hcatalog/conf/' }
+  when: "'masternodes' in group_names"
+  tags: get-hadoop-config
+
+
+- name: "** nox ** install hadoop config on slavenodes"
+  action: synchronize src=/var/lib/ansible/hadoop-ansible/playbooks/files/nox/{{ item.src }} dest=/etc/hdp/nox/{{ item.dest }}
+  with_items:
+    - { src: 'zookeeper/conf/', dest: 'zookeeper/conf/' }
+    - { src: 'hadoop/conf/', dest: 'hadoop/conf/' }
+    - { src: 'hbase/conf/', dest: 'hbase/conf/' }
+    - { src: 'hive/conf/', dest: 'hive/conf/' }
+    - { src: 'pig/conf/', dest: 'pig/conf/' }
+    - { src: 'oozie/conf/', dest: 'oozie/conf/' }
+    - { src: 'oozie-server/conf/', dest: 'oozie-server/conf/' }
+    - { src: 'hcatalog/conf/', dest: 'hcatalog/conf/' }
+  when: "'slavenodes' in group_names"
+  tags: get-hadoop-config
+
+
+- name: "** nox ** create link for hadoop config on slavenodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/etc/hdp/nox/hadoop/conf', dest: '/apache/hadoop/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/etc/hdp/nox/hbase/conf', dest: '/apache/hbase/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/etc/hdp/nox/zookeeper/conf', dest: '/apache/zookeeper/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/etc/hdp/nox/hive/conf', dest: '/apache/hive/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/etc/hdp/nox/pig/conf', dest: '/apache/pig/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/etc/hdp/nox/oozie-server/conf', dest: '/apache/oozie-server/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/etc/hdp/nox/oozie/conf', dest: '/apache/oozie/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/etc/hdp/nox/hcatalog/conf', dest: '/apache/hcatalog/conf', owner: 'hadoop', group: 'hadoop' }
+  when: "'slavenodes' in group_names"
+  tags: get-hadoop-config
+
+- name: "** nox ** create link for hadoop config on masternodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/ebay/hdp/nox/hadoop/conf', dest: '/apache/hadoop/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/ebay/hdp/nox/hbase/conf', dest: '/apache/hbase/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/ebay/hdp/nox/zookeeper/conf', dest: '/apache/zookeeper/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/ebay/hdp/nox/hive/conf', dest: '/apache/hive/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/ebay/hdp/nox/pig/conf', dest: '/apache/pig/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/ebay/hdp/nox/oozie-server/conf', dest: '/apache/oozie-server/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/ebay/hdp/nox/oozie/conf', dest: '/apache/oozie/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/ebay/hdp/nox/hcatalog/conf', dest: '/apache/hcatalog/conf', owner: 'hadoop', group: 'hadoop' }
+  when: "'masternodes' in group_names"
+  tags: get-hadoop-config
+
+
+- name: "** nox ** chown hadoop config on masternodes"
+  action: command chown -R hadoop:hadoop /ebay/hdp/nox
+  when: "'masternodes' in group_names"
+  tags: get-hadoop-config
+
+- name: "** nox ** chown hadoop config on slavenodes"
+  action: command chown -R hadoop:hadoop /etc/hdp/nox
+  when: "'slavenodes' in group_names"
+  tags: get-hadoop-config
+
+
+# daemontools configs
+- name: "** nox ** copy file HADOOP_SECURE_DN_USER"
+  action: copy src={{ item }} dest=/service/datanode/env/HADOOP_SECURE_DN_USER owner=root group=root mode=0644
+  with_items:
+    - /var/lib/ansible/hadoop-ansible/playbooks/files/HADOOP_SECURE_DN_USER
+  when: "'slavenodes' in group_names"
+  tags: get-hadoop-config
+
+- name: "** nox ** copy file historyserver daemontools run script"
+  action: copy src={{ item }} dest=/service/historyserver/run owner=root group=root mode=0755
+  with_items:
+    - /var/lib/ansible/hadoop-ansible/playbooks/files/historyserver.dt.run.HDP1
+  when: "'historyserver' in group_names"
+  tags: get-hadoop-config
+

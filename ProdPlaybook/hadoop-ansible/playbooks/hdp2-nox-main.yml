@@ -1,0 +1,22 @@
+---
+
+- hosts: nox-dn
+  vars_files:
+    - vars/main.yml
+  gather_facts: yes
+  tasks:
+     - include: hdp2-shutdown-puppet.yml
+     - include: hdp2-install.yml
+     - include: hdp2-hadoop-config.yml
+     - include: hdp2-enable.yml
+     - include: mounts.yml
+
+- hosts: nox-en
+  vars_files:
+    - vars/main.yml
+  gather_facts: yes
+  tasks:
+     - include: hdp2-shutdown-puppet.yml
+     - include: hdp2-install.yml
+     - include: hdp2-hadoop-config.yml
+     - include: hdp2-enable.yml

@@ -1,0 +1,22 @@
+#!/usr/bin/env rake
+# vim: et sw=2 ts=2
+
+require 'tmpdir'
+
+task :default => :diff
+
+desc "Compare expanded files with the actual files"
+task :diff do
+  Dir.mktmpdir do |tmpdir|
+    sh "generate-hadoop-config metaconf.yaml #{tmpdir}"
+    Dir.entries(tmpdir).each do |entry|
+      next if entry.start_with? '.'
+      system "diff -u #{File.join(tmpdir, entry)} #{entry}"
+    end
+  end
+end
+
+desc "Regenerate the Hadoop configuration based on the templates"
+task :generate do
+  sh "generate-hadoop-config metaconf.yaml"
+end

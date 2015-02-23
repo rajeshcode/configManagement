@@ -1,0 +1,3 @@
+HADOOPONE_HOME=/apache/hadoop
+export HADOOP_CONF_DIR=$HADOOPONE_HOME/conf
+$HADOOPONE_HOME/bin/hadoop org.apache.hadoop.hdfs.tools.DTFetcher $*

@@ -1,0 +1,98 @@
+---
+
+- name: "** ares ** unlink any hadoop related links from previous installation"
+  action: file path={{ item }} state=absent
+  with_items:
+    - /apache/hive
+    - /apache/pig
+    - /apache/hadoop
+  tags: enable-hdp-lw-hadoop
+
+- name: "** ares ** create links for hadoop sfw directories"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link
+  with_items:
+    - { src: '/apache/{{ hdp2_hive }}', dest: '/apache/hive', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_pig }}', dest: '/apache/pig', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_hadoop }}', dest: '/apache/hadoop', owner: 'root', group: 'hadoop' }
+  tags: enable-hdp-lw-hadoop
+
+
+
+- name: "** ares ** ensure additional apache hadoop directories are present"
+  action: file path={{ item.src }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }} state=directory
+  with_items:
+    - { src: '/apache', owner: 'root', group: 'hadoop', mode: '0775' }
+    - { src: '/apache/jsvc', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+#    - { src: '/apache/lib', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { src: '/apache/hadoop/lib', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { src: '/apache/hadoop/pids', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { src: '/var/run/hadoop-hdfs', owner: 'hadoop', group: 'root', mode: '0755' }
+  tags:
+    - enable-hdp-lw-hadoop
+    - deploy-hdp2-configs
+
+- name: "** ares ** create link for bigtop-jsvc for rhel 6"
+  action: file src={{ item.src }} dest={{ item.dest }} owner=hadoop group=hadoop state=link force=yes
+  with_items:
+    - { src: '/usr/libexec/bigtop-utils/jsvc', dest: '/apache/jsvc/jsvc' }
+  when: ansible_distribution == RedHat AND ansible_distribution_major_version == 6
+  tags: enable-hdp-lw-hadoop
+  ignore_errors: yes
+
+- name: "** ares ** create link for bigtop-jsvc for rhel 5"
+  action: file src={{ item.src }} dest={{ item.dest }} owner=hadoop group=hadoop state=link force=yes
+  with_items:
+    - { src: '/usr/lib/bigtop-utils/jsvc', dest: '/apache/jsvc/jsvc' }
+  when: ansible_distribution == RedHat AND ansible_distribution_major_version == 5
+
+  ignore_errors: yes
+  tags: enable-hdp-lw-hadoop
+
+
+- name: "** ares ** create link for hadoop ancillary log directories on slavenodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/log/hadoop/hadoop', dest: '/apache/hadoop/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/hive', dest: '/apache/hive/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/pig', dest: '/apache/pig/logs', owner: 'hadoop', group: 'hadoop' }
+  when: "'slavenodes' in group_names"
+  tags:
+    - hadoop-logs
+    - enable-hdp-lw-hadoop
+
+- name: "** ares ** check if /var/log/hadoop dir is present on masternodes"
+  action: stat path={{ item }}
+  with_items:
+    - /var/log/hadoop
+  register: hadoopvarlogdir
+  when: "'masternodes' in group_names"
+  tags:
+    - hadoop-logs
+    - enable-hdp-lw-hadoop
+
+- name: "** ares ** rename /var/log/hadoop dir if present on masternodes"
+  action: shell mv {{ item.item }} {{ item.item }}.$(date +%F.%T)
+  with_items: hadoopvarlogdir.results
+  when: item.stat.isdir is defined and item.stat.isdir == true
+  tags:
+    - hadoop-logs
+    - enable-hdp-lw-hadoop
+
+- name: "** ares ** create link for hadoop ancillary log directories on masternodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/hadoop/logs', dest: '/var/log/hadoop', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hadoop', dest: '/apache/hadoop/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hive', dest: '/apache/hive/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/pig', dest: '/apache/pig/logs', owner: 'hadoop', group: 'hadoop' }
+  when: "'masternodes' in group_names"
+  tags:
+    - hadoop-logs
+    - enable-hdp-lw-hadoop
+
+
+- name: "** ares ** create link for jdk 7 "
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/usr/java/jdk1.7.0_60', dest: '/usr/java/latest', owner: 'root', group: 'root' }
+  tags: enable-hdp-lw-hadoop

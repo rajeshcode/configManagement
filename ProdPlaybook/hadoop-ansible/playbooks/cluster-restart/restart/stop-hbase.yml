@@ -1,0 +1,23 @@
+---
+
+#
+# stop hbase service 
+#
+- name: "** NOX STOP HBASE ** Stop Regionservers"
+  action: command /usr/bin/svc -d /service/hbase-regionserver
+  when: is_regionserver
+  tags: 
+    - stop-hbase-hdp1
+    - stop-hbase-hdp2
+    - stop-regionservers
+    - stop-hdp1
+    - stop-hdp2
+
+- name: "** NOX STOP HBASE ** Stop HBase Master"
+  action: command /usr/bin/svc -d /service/hbase-master
+  when: is_hbasemaster
+  tags: 
+    - stop-hbase-hdp1
+    - stop-hbase-hdp2
+    - stop-hdp1
+    - stop-hdp2

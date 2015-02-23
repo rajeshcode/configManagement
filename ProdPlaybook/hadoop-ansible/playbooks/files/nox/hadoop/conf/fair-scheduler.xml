@@ -1,0 +1,67 @@
+<?xml version="1.0"?> 
+
+<allocations>
+  <!-- General -->
+  <defaultPoolSchedulingMode>fair</defaultPoolSchedulingMode>
+  <fairSharePreemptionTimeout>300</fairSharePreemptionTimeout>
+  <poolMaxJobsDefault>3000</poolMaxJobsDefault>
+
+  <!-- Pool(Queue)-specific -->
+
+  <pool name="hdc_uc4_platform">
+    <weight>11.2</weight>
+    <maxRunningJobs>100</maxRunningJobs>
+    <maxMaps>1000000</maxMaps>
+    <maxReduces>1000000</maxReduces>
+  </pool>
+
+  <pool name="hdmi-hadoopeng">
+    <weight>0.02</weight>
+    <maxRunningJobs>100</maxRunningJobs>
+    <maxMaps>1000000</maxMaps>
+    <maxReduces>1000000</maxReduces>
+  </pool>
+
+  <pool name="hdmi-mm">
+    <weight>1.88</weight>
+    <maxRunningJobs>100</maxRunningJobs>
+    <maxMaps>1000000</maxMaps>
+    <maxReduces>1000000</maxReduces>
+  </pool>
+
+  <pool name="hdmi-others">
+    <weight>2.2</weight>
+    <maxRunningJobs>100</maxRunningJobs>
+    <maxMaps>1000000</maxMaps>
+    <maxReduces>1000000</maxReduces>
+  </pool>
+
+  <pool name="hdmi-prod">
+    <weight>35.4</weight>
+    <maxRunningJobs>100</maxRunningJobs>
+    <maxMaps>1000000</maxMaps>
+    <maxReduces>1000000</maxReduces>
+  </pool>
+
+  <pool name="hdmi-research">
+    <weight>6.9</weight>
+    <maxRunningJobs>10</maxRunningJobs>
+    <maxMaps>1000000</maxMaps>
+    <maxReduces>1000000</maxReduces>
+  </pool>
+
+  <pool name="hdmi-set">
+    <weight>37</weight>
+    <maxRunningJobs>100</maxRunningJobs>
+    <maxMaps>1000000</maxMaps>
+    <maxReduces>1000000</maxReduces>
+  </pool>
+
+  <pool name="hdmi-technology">
+    <weight>5.45</weight>
+    <maxRunningJobs>100</maxRunningJobs>
+    <maxMaps>1000000</maxMaps>
+    <maxReduces>1000000</maxReduces>
+  </pool>
+
+</allocations>

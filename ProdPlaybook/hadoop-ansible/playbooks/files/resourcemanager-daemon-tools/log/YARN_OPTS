@@ -1,0 +1,1 @@
+-Dhadoop.log.file.RFA.MaxBackupIndex=500 -Dhadoop.log.file.RFA.MaxFileSize=1GB

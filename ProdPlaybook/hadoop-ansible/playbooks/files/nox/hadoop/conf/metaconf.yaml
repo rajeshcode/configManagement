@@ -1,0 +1,19 @@
+---
+max_memory: 10g
+fs.default.name: hdfs://nn:8020
+dfs.hosts: /etc/hadoop/conf/hosts
+dfs.hosts.exclude: /etc/hadoop/conf/hdfs-exclude
+dfs.name.dir:
+  - /hadoop/nn1/1
+  - /hadoop/nn1/2
+dfs.namenode.checkpoint.dir:
+  - /hadoop/nn2/1
+  - /hadoop/nn2/2
+dfs.http.address: nn:50070
+dfs.secondary.http.address: sn:50090
+dfs.datanode.max.xcievers: 16000
+dfs.datanode.du.reserved: 300000000
+hadoop.tmp.dir: /tmp/hadoop/hadoop-${user.name}
+mapred.job.tracker: jt:8021
+mapred.reduce.tasks: 120
+use.capacity_scheduler: false

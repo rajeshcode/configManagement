@@ -1,0 +1,24 @@
+---
+
+#
+# start hbase service
+#
+- name: "** NOX START HBASE ** Start Regionservers"
+  action: command /usr/bin/svc -u /service/hbase-regionserver
+  when: is_regionserver
+  tags: 
+    - start-hbase-hdp1
+    - start-hbase-hdp2
+    - start-regionservers
+    - start-hdp1
+    - start-hdp2
+
+- name: "** NOX START HBASE ** Start HBase Master"
+  action: command /usr/bin/svc -u /service/hbase-master
+  when: is_hbasemaster
+  tags: 
+    - start-hbase-hdp1
+    - start-hbase-hdp2
+    - start-hdp1
+    - start-hdp2
+

@@ -1,0 +1,17 @@
+[ebay-hdp-2.1.3-LW-x86_64]
+name=eBay-HDP2.1.3-LW
+baseurl=http://installsvc.vip.phx.ebay.com/packages/hs/hdp2-lw/centos/$releasever/RPMS/HDP-2.1/
+enabled=1
+gpgcheck=0
+
+[ebay-hdp-2.1.3-GA-x86_64]
+name=eBay-HDP2.1.3-GA
+baseurl=http://installsvc.vip.phx.ebay.com/packages/hs/hwx/ebay-hdp-ga-2.1.3.0/
+enabled=1
+gpgcheck=0
+
+[hwx-hdp-2.1.3-GA-x86_64]
+name=HWX-HDP2.1.3-GA
+baseurl=http://installsvc.vip.phx.ebay.com/packages/hs/hwx/HDP-2.1.3.0/
+enabled=1
+gpgcheck=0

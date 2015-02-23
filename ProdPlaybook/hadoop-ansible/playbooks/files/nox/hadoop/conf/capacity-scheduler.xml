@@ -1,0 +1,293 @@
+<?xml version="1.0"?> 
+
+<configuration> 
+
+<!-- system limit, across all queues --> 
+
+<property> 
+  <name>mapred.capacity-scheduler.maximum-system-jobs</name> 
+  <value>3000</value> 
+<description>Maximum number of jobs in the system which can be initialized, 
+concurrently, by the Capacity Scheduler. 
+</description> 
+</property> 
+
+<!-- queue: queueSystem for data loading jobs --> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdc_uc4_platform.capacity</name> 
+  <value>20</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdc_uc4_platform.maximum-capacity</name> 
+  <value>80</value> 
+</property>
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdc_uc4_platform.supports-priority</name> 
+  <value>false</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdc_uc4_platform.minimum-user-limit-percent</name> 
+  <value>20</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdc_uc4_platform.user-limit-factor</name> 
+  <value>4</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdc_uc4_platform.maximum-initialized-active-tasks</name> 
+  <value>1000000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdc_uc4_platform.maximum-initialized-active-tasks-per-user</name> 
+  <value>100000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdc_uc4_platform.init-accept-jobs-factor</name> 
+  <value>100</value> 
+</property> 
+
+<!-- queue: queueDataMining for HDMI Magic8Ball --> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-technology.capacity</name> 
+  <value>10</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-technology.maximum-capacity</name> 
+  <value>30</value> 
+</property>
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-technology.supports-priority</name> 
+  <value>true</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-technology.minimum-user-limit-percent</name> 
+  <value>30</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-technology.user-limit-factor</name> 
+  <value>2</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-technology.maximum-initialized-active-tasks</name> 
+  <value>1000000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-technology.maximum-initialized-active-tasks-per-user</name> 
+  <value>500000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-technology.init-accept-jobs-factor</name> 
+  <value>100</value> 
+</property>
+
+<!-- queue: queueeRL for eBay Research Labs --> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-research.capacity</name> 
+  <value>15</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-research.maximum-capacity</name> 
+  <value>50</value> 
+</property>
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-research.supports-priority</name> 
+  <value>true</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-research.minimum-user-limit-percent</name> 
+  <value>30</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-research.user-limit-factor</name> 
+  <value>2</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-research.maximum-initialized-active-tasks</name> 
+  <value>1000000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-research.maximum-initialized-active-tasks-per-user</name> 
+  <value>500000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-research.init-accept-jobs-factor</name> 
+  <value>10</value> 
+</property>
+
+<!-- queue: queueSearchScience for Search Science --> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-set.capacity</name> 
+  <value>15</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-set.maximum-capacity</name> 
+  <value>50</value> 
+</property>
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-set.supports-priority</name> 
+  <value>true</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-set.minimum-user-limit-percent</name> 
+  <value>30</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-set.user-limit-factor</name> 
+  <value>2</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-set.maximum-initialized-active-tasks</name> 
+  <value>1000000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-set.maximum-initialized-active-tasks-per-user</name> 
+  <value>500000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-set.init-accept-jobs-factor</name> 
+  <value>100</value> 
+</property>
+
+<!-- queue: queueTnS for Trust and Safety --> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-mm.capacity</name> 
+  <value>10</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-mm.maximum-capacity</name> 
+  <value>30</value> 
+</property>
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-mm.supports-priority</name> 
+  <value>true</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-mm.minimum-user-limit-percent</name> 
+  <value>30</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-mm.user-limit-factor</name> 
+  <value>2</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-mm.maximum-initialized-active-tasks</name> 
+  <value>1000000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-mm.maximum-initialized-active-tasks-per-user</name> 
+  <value>500000</value> 
+</property> 
+<property> 
+  <name>mapred.capacity-scheduler.queue.hdmi-mm.init-accept-jobs-factor</name> 
+  <value>100</value> 
+</property>
+
+<!-- queue: queue for HDMI HadoopEng -->
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-hadoopeng.capacity</name>
+  <value>5</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-hadoopeng.maximum-capacity</name>
+  <value>30</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-hadoopeng.supports-priority</name>
+  <value>true</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-hadoopeng.minimum-user-limit-percent</name>
+  <value>30</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-hadoopeng.user-limit-factor</name>
+  <value>4</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-hadoopeng.maximum-initialized-active-tasks</name>
+  <value>1000000</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-hadoopeng.maximum-initialized-active-tasks-per-user</name>
+  <value>500000</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-hadoopeng.init-accept-jobs-factor</name>
+  <value>100</value>
+</property>
+
+
+<!-- queue: queue for hdmi-prod -->
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-prod.capacity</name>
+  <value>20</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-prod.maximum-capacity</name>
+  <value>80</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-prod.supports-priority</name>
+  <value>true</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-prod.minimum-user-limit-percent</name>
+  <value>30</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-prod.user-limit-factor</name>
+  <value>4</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-prod.maximum-initialized-active-tasks</name>
+  <value>1000000</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-prod.maximum-initialized-active-tasks-per-user</name>
+  <value>500000</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-prod.init-accept-jobs-factor</name>
+  <value>100</value>
+</property>
+
+
+
+<!-- queue: queue for hdmi-others -->
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-others.capacity</name>
+  <value>5</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-others.maximum-capacity</name>
+  <value>30</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-others.supports-priority</name>
+  <value>true</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-others.minimum-user-limit-percent</name>
+  <value>30</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-others.user-limit-factor</name>
+  <value>4</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-others.maximum-initialized-active-tasks</name>
+  <value>1000000</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-others.maximum-initialized-active-tasks-per-user</name>
+  <value>500000</value>
+</property>
+<property>
+  <name>mapred.capacity-scheduler.queue.hdmi-others.init-accept-jobs-factor</name>
+  <value>100</value>
+</property>
+
+
+
+
+</configuration>

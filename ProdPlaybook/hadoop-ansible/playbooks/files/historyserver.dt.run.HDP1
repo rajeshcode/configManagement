@@ -1,0 +1,17 @@
+#!/bin/sh
+
+exec 2>&1
+
+# Give the hadoop user access
+setfacl -R -m u:hadoop:rwx supervise
+
+ulimit -n 65535
+
+
+##exec envdir env setuidgid hadoop /apache/hadoop/sbin/mr-jobhistory-daemon.sh --config /apache/hadoop/conf start historyserver
+
+# HDP1:
+exec envdir env setuidgid hadoop /apache/hadoop/bin/hadoop historyserver
+
+# HDP2:
+#exec envdir env setuidgid hadoop /apache/hadoop/bin/mapred --config /apache/hadoop/conf historyserver

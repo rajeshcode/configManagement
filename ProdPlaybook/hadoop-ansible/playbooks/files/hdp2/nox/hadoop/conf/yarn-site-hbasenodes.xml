@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+
+<!-- Memory configuration for containers -->
+
+  <property>
+    <name>yarn.scheduler.minimum-allocation-mb</name>
+    <value>1024</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value>8192</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.vmem-pmem-ratio</name>
+    <value>2.1</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+    <value>32748</value>
+  </property>
+
+<!-- Health Checker configuration -->
+
+<property>
+    <name>yarn.nodemanager.health-checker.script.path</name>
+    <value>/apache/hadoop/conf/health_check.sh</value>
+</property>
+
+<property>
+    <name>yarn.nodemanager.health-checker.interval-ms</name>
+    <value>600000</value>
+</property>
+
+<property>
+    <name>yarn.nodemanager.health-checker.script.timeout-ms</name>
+<value>600000</value>
+</property>
+
+<property>
+    <name>yarn.nodemanager.disk-health-checker.min-healthy-disks</name>
+<value>0.25</value>
+</property>
+
+<property>
+    <name>yarn.nodemanager.disk-health-checker.interval-ms</name>
+<value>600000</value>
+</property>
+
+
+  <property>
+    <name>yarn.resourcemanager.scheduler.class</name>
+<value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.sleep-delay-before-sigkill.ms</name>
+    <value>250</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.aux-service.mapreduce.shuffle.class</name>
+    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.rm.container-allocation.expiry-interval-ms</name>
+    <value>600000</value>
+  </property>
+  
+<property>
+    <name>yarn.log-aggregation-enable</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.remote-app-log-dir</name>
+    <value>/app-logs</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.remote-app-log-dir-suffix</name>
+    <value>logs</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.log-aggregation.compression-type</name>
+    <value>gz</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.local-dirs</name>
+    <value>/hadoop/1/scratch/local,/hadoop/2/scratch/local,/hadoop/3/scratch/local,/hadoop/4/scratch/local,/hadoop/5/scratch/local,/hadoop/6/scratch/local,/hadoop/7/scratch/local,/hadoop/8/scratch/local,/hadoop/9/scratch/local,/hadoop/10/scratch/local,/hadoop/11/scratch/local,/hadoop/12/scratch/local</value>
+    <final>true</final>
+  </property>
+
+<property>
+    <name>yarn.nodemanager.log-dirs</name>
+    <value>/hadoop/1/scratch/logs,/hadoop/2/scratch/logs,/hadoop/3/scratch/logs,/hadoop/4/scratch/logs,/hadoop/5/scratch/logs,/hadoop/6/scratch/logs,/hadoop/7/scratch/logs,/hadoop/8/scratch/logs,/hadoop/9/scratch/logs,/hadoop/10/scratch/logs,/hadoop/11/scratch/logs,/hadoop/12/scratch/logs</value>
+    <final>true</final>
+</property>
+
+  <property>
+    <name>yarn.nodemanager.delete.debug-delay-sec</name>
+    <value>0</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.address</name>
+    <value>nox-srw-jt.vip.ebay.com:8021</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.scheduler.address</name>
+    <value>nox-srw-jt.vip.ebay.com:8030</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value>nox-srw-jt.vip.ebay.com:50030</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.resource-tracker.address</name>
+    <value>nox-srw-jt.vip.ebay.com:8031</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.admin.address</name>
+    <value>nox-srw-jt.vip.ebay.com:8033</value>
+  </property>
+  
+  <property>
+      <name>yarn.http.policy</name>
+      <value>HTTPS_ONLY</value>
+      <final>true</final>
+  </property>
+  
+  <property>
+      <name>yarn.resourcemanager.webapp.https.address</name>
+      <value>nox-srw-jt.vip.ebay.com:50030</value>
+  </property>
+
+  <property>
+    <name>yarn.log.server.url</name>
+    <value>http://nox-srw-jt.vip.ebay.com:51111/jobhistory/logs</value>
+  </property>
+  
+<property>
+    <name>yarn.resourcemanager.nodes.exclude-path</name>
+    <value>/apache/hadoop/etc/hadoop/mapred-exclude</value>
+  </property>
+
+<property>
+    <name>yarn.nodemanager.delete.debug-delay-sec</name>
+    <value>600</value>
+  </property>
+
+  <!-- BEGIN security configuration -->
+  <property>
+    <name>yarn.acl.enable</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>yarn.admin.acl</name>
+    <value> hdmi-hadoopeng</value>
+    <final>true</final>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.keytab</name>
+    <value>/etc/hadoop/hadoop.keytab</value>
+    <final>true</final>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.principal</name>
+    <value>hadoop/nox-srw-jt.vip.ebay.com@APDTEST.EBAY.COM</value>
+    <final>true</final>
+  </property>
+  <property>
+    <name>yarn.nodemanager.keytab</name>
+    <value>/etc/hadoop/hadoop.keytab</value>
+    <final>true</final>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.principal</name>
+    <value>hadoop/_HOST@APDTEST.EBAY.COM</value>
+    <final>true</final>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.container-executor.class</name>
+    <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
+    <final>true</final>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.linux-container-executor.group</name>
+    <value>hadoop</value>
+    <final>true</final>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.webapp.https.address</name>
+    <value>0.0.0.0:50060</value>
+  </property>
+
+
+<!-- END security configuration -->
+</configuration>
+

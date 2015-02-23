@@ -1,0 +1,12 @@
+---
+
+is_namenode: "'namenode' in group_names"
+is_secondarynamenode: "'secondarynamenode' in group_names"
+is_jobtracker: "'jobtracker' in group_names"
+is_resourcemanager: "'resourcemanager' in group_names"
+is_historyserver: "'historyserver' in group_names"
+is_hbasemaster: "'hbasemaster' in group_names"
+is_zookeeper: "'zookeepers' in group_names"
+is_cli: "'cli' in group_names"
+is_slavenode: "'slavenodes' in group_names"
+is_regionserver: "'regionservers' in group_names"

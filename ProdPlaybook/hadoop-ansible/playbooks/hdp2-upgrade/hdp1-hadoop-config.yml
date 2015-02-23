@@ -1,0 +1,78 @@
+---
+
+- name: "** ares ** ensure hadoop log directories are present on slavenodes"
+  action: file path={{ item.name }} owner=hadoop group=hadoop mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/var/log/hadoop', mode: '0755' }
+    - { name: '/var/log/hadoop/hadoop', mode: '0755' }
+    - { name: '/var/log/hadoop/hive', mode: '0775' }
+    - { name: '/var/log/hadoop/pig', mode: '0775' }
+  when: "'slavenodes' in group_names"
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+- name: "** ares ** ensure hadoop log directories are present on masternodes"
+  action: file path={{ item.name }} owner=hadoop group=hadoop mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/hadoop/logs', mode: '0755' }
+    - { name: '/hadoop/logs/hadoop', mode: '0755' }
+    - { name: '/hadoop/logs/hive', mode: '0775' }
+    - { name: '/hadoop/logs/pig', mode: '0775' }
+  when: "'masternodes' in group_names"
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+- name: "** ares ** check if log dir is present instead of soft link"
+  action: stat path={{ item }}
+  with_items:
+    - /apache/hadoop/logs
+    - /apache/hive/logs
+    - /apache/pig/logs
+  register: oldlogdir
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+- name: "** ares ** rename old log dir if present"
+  action: shell mv {{ item.item }} {{ item.item }}.OLD.$(date +%F.%T)
+  with_items: oldlogdir.results
+  when: item.stat.isdir is defined and item.stat.isdir == true
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+- name: "** ares ** create link for hadoop ancillary log directories on slavenodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/log/hadoop/hadoop', dest: '/apache/hadoop/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/hive', dest: '/apache/hive/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/pig', dest: '/apache/pig/logs', owner: 'hadoop', group: 'hadoop' }
+  when: "'slavenodes' in group_names"
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+- name: "** ares ** create link for hadoop ancillary log directories on masternodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/hadoop/logs', dest: '/var/log/hadoop', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hadoop', dest: '/apache/hadoop/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hive', dest: '/apache/hive/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/pig', dest: '/apache/pig/logs', owner: 'hadoop', group: 'hadoop' }
+  when: "'masternodes' in group_names"
+  tags: 
+    - hadoop-logs
+    - install-hit-apache-hadoop
+
+
+# need to look into this part later 
+#- name: "** ares ** copy file HADOOP_SECURE_DN_USER"
+#  action: copy src={{ item }} dest=/service/datanode/env/HADOOP_SECURE_DN_USER owner=root group=root mode=0644
+#  with_items:
+#    - /var/lib/ansible/hadoop-ansible/playbooks/files/HADOOP_SECURE_DN_USER
+#  when: "'slavenodes' in group_names"
+#  tags: get-hadoop-config
+
+

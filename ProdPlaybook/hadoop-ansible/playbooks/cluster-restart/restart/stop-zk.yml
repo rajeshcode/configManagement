@@ -1,0 +1,24 @@
+---
+
+#
+# stop zookeeper service 
+#
+- name: "** NOX STOP ZK ** Stop Zookeepers"
+  action: command /usr/bin/svc -d /service/zookeeper
+  when: is_zookeeper
+  tags:
+    - stop-hbase-hdp1
+    - stop-hbase-hdp2
+    - stop-zookeepers
+    - stop-hdp1
+    - stop-hdp2
+
+- name: "** NOX STOP ZK ** pkill zookeepers"
+  action: shell pkill -9 -u hadoop -f QuorumPeerMain
+  when: is_zookeeper
+  tags:
+    - stop-hbase-hdp1
+    - stop-hbase-hdp2
+    - stop-zookeepers
+    - stop-hdp1
+    - stop-hdp2

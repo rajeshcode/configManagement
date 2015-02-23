@@ -1,0 +1,45 @@
+---
+
+#
+# Stop hdfs service
+#
+- name: "** ARES STOP HDFS ** Stop HDFS on secondarynamenode"
+  action: command /usr/bin/svc -d /service/secondarynamenode
+  when: is_secondarynamenode
+  tags: 
+    - stop-hdfs-hdp1
+    - stop-hdfs-hdp2
+    - stop-hdp1
+    - stop-hdp2
+  ignore_errors: yes
+
+- name: "** ARES STOP HDFS ** Stop HDFS on datanodes"
+  action: command /usr/bin/svc -d /service/datanode
+  when: is_slavenode
+  tags: 
+    - stop-hdfs-hdp1
+    - stop-hdfs-hdp2
+    - stop-datanodes
+    - stop-hdp1
+    - stop-hdp2
+  ignore_errors: yes
+
+- name: "** ARES STOP MAPRED ** pkill datanode"
+  action: command pkill -9 -u hadoop -f proc_datanode
+  when: is_slavenode
+  tags:
+    - stop-hdfs-hdp1
+    - stop-hdfs-hdp2
+    - stop-datanodes
+    - stop-hdp1
+    - stop-hdp2
+  ignore_errors: yes
+- name: "** ARES STOP HDFS ** Stop HDFS on namenode"
+  action: command /usr/bin/svc -d /service/namenode
+  when: is_namenode
+  tags: 
+    - stop-hdfs-hdp1
+    - stop-hdfs-hdp2
+    - stop-hdp1
+    - stop-hdp2
+  ignore_errors: yes

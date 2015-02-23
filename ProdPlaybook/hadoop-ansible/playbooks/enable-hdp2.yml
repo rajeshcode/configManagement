@@ -1,0 +1,57 @@
+---
+
+- name: "** nox ** unlink any hadoop related links from previous installation"
+  action: file path={{ item }} state=absent
+  with_items:
+    - /apache/hbase
+    - /apache/hive
+    - /apache/zookeeper
+    - /apache/oozie-server
+    - /apache/oozie
+    - /apache/pig
+    - /apache/hadoop
+    - /apache/hcatalog
+  tags: enable-hdp-lw-hadoop
+
+
+- name: "** nox ** create links for hadoop sfw directories"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link
+  with_items:
+    - { src: '/apache/hbase-0.96.0.2.0.6.0-38-hadoop2', dest: '/apache/hbase', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/hive-0.12.0.2.0.6.0-38', dest: '/apache/hive', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/hcatalog-0.12.0.2.0.6.0-38', dest: '/apache/hcatalog', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/zookeeper-3.4.5.2.0.6.0-38', dest: '/apache/zookeeper', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/oozie-4.0.0.2.0.6.0-38', dest: '/apache/oozie-server', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/oozie-4.0.0.2.0.6.0-38/oozie-client-4.0.0.2.0.6.0-38', dest: '/apache/oozie', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/pig-0.12.0.2.0.6.0-38', dest: '/apache/pig', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/hadoop-2.2.0.2.0.6.0-38', dest: '/apache/hadoop', owner: 'hadoop', group: 'hadoop' }
+  tags: enable-hdp-lw-hadoop
+
+- name: "** nox ** ensure additional apache hadoop directories are present"
+  action: file path={{ item }} owner=hadoop group=hadoop mode=0755 state=directory
+  with_items:
+    - /apache
+    - /apache/lib
+    - /apache/hadoop/lib
+    - /apache/hadoop/pids
+  tags: enable-hdp-lw-hadoop
+
+
+# install libsnappy softlink
+- name: "** nox ** create link for libsnappy"
+  action: file src={{ item.src }} dest={{ item.dest }} owner=hadoop group=hadoop state=link
+  with_items:
+    - { src: '/usr/lib64/libsnappy.so', dest: '/apache/hadoop/lib/native/Linux-amd64-64/libsnappy.so' }
+  tags: enable-hdp-lw-hadoop
+
+- name: "** nox ** rename /apache/hbase/lib/native directory if it is not a soft link"
+  action: shell test -L /apache/hbase/lib/native || mv /apache/hbase/lib/native /apache/hbase/lib/native.$(date +%F.%T)
+  tags: enable-hdp-lw-hadoop
+
+- name: "** nox ** create link for hadoop and hbase ancillary directories"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/apache/hadoop/lib/native', dest: '/apache/hbase/lib/native', owner: 'hadoop', group: 'hadoop' }
+  tags: enable-hdp-lw-hadoop
+
+

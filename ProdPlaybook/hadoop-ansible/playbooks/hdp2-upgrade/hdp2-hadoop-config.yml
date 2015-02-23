@@ -1,0 +1,66 @@
+---
+
+- name: "** ares ** create directory for hdp hadoop config"
+  action: file path={{ item.name }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/etc/hdp', owner: 'root', group: 'hadoop', mode: '0755' }
+    - { name: '{{ hdp2_conf_dir }}', owner: 'root', group: 'hadoop', mode: '0755' }
+    - { name: '{{ hdp2_conf_dir }}/hadoop', owner: 'root', group: 'hadoop', mode: '0755' }
+    - { name: '{{ hdp2_conf_dir }}/pig', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { name: '{{ hdp2_conf_dir }}/hive', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+  tags: set-hdp2-config
+
+- name: "** ares ** ensure hadoop log directories are present on slavenodes"
+  action: file path={{ item.name }} owner=hadoop group=hadoop mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/var/log/hadoop', mode: '0755' }
+    - { name: '/var/log/hadoop/hadoop', mode: '0755' }
+    - { name: '/var/log/hadoop/hive', mode: '0775' }
+    - { name: '/var/log/hadoop/pig', mode: '0775' }
+  when: "'slavenodes' in group_names"
+  tags: 
+    - set-hadoop-log-dirs
+    - set-hdp2-config
+
+- name: "** ares ** ensure hadoop log directories are present on masternodes"
+  action: file path={{ item.name }} owner=hadoop group=hadoop mode={{ item.mode }} state=directory
+  with_items:
+    - { name: '/hadoop/logs', mode: '0755' }
+    - { name: '/hadoop/logs/hadoop', mode: '0755' }
+    - { name: '/hadoop/logs/hive', mode: '0775' }
+    - { name: '/hadoop/logs/pig', mode: '0775' }
+  when: "'masternodes' in group_names"
+  tags: 
+    - set-hadoop-log-dirs
+    - set-hdp2-config
+
+#######
+
+##- name: "** ares ** chown hdp2 configs"
+##  action: command chown -R hadoop:hadoop {{ hdp2_conf_dir }}
+##  tags: 
+##    - set-hdp2-config
+##    - deploy-hdp2-configs
+##
+
+## - { name: '{{ hdp2_conf_dir }}/hadoop/conf/container-executor.cfg', owner: 'root', group: 'hadoop', mode: '0400', state: 'file' }
+- name: "** ares ** set root ownership to hadoop config dirs and files"
+  action: file path={{ item.name }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }} state={{ item.state }}
+  with_items:
+    - { name: '{{ hdp2_conf_dir }}', owner: 'root', group: 'hadoop', mode: '0755', state: 'directory' }
+    - { name: '{{ hdp2_conf_dir }}/hadoop', owner: 'root', group: 'hadoop', mode: '0755', state: 'directory' }
+    - { name: '{{ hdp2_conf_dir }}/hadoop/conf', owner: 'root', group: 'hadoop', mode: '0755', state: 'directory' }
+  tags: 
+    - set-hdp2-config
+    - deploy-hdp2-configs
+
+
+#######
+
+# - name: "** ares ** set file HADOOP_SECURE_DN_USER on datanodes"
+#  action: copy src={{ item }} dest=/var/lib/service/datanode/env/HADOOP_SECURE_DN_USER owner=root group=root mode=0644
+#  with_items:
+#    - /var/lib/ansible/hadoop-ansible/roles/ares/files/HADOOP_SECURE_DN_USER
+#  when: "'slavenodes' in group_names"
+#  tags: set-hdp2-config
+

@@ -1,0 +1,119 @@
+---
+
+##/service/hbase-master/log/main
+
+
+# create links for daemontools services 
+
+- name: "** nox ** link for namenode daemontools service"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/lib/service/namenode', dest: '/service/namenode', owner: 'root', group: 'root' }
+  when: "'namenode' in group_names"
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** link for secondarynamenode daemontools service"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/lib/service/secondarynamenode', dest: '/service/secondarynamenode', owner: 'root', group: 'root' }
+  when: "'secondarynamenode' in group_names"
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** link for hbase-master daemontools service"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/lib/service/hbase-master', dest: '/service/hbase-master', owner: 'root', group: 'root' }
+  when: "'hbase-master' in group_names"
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** link for resourcemanager daemontools service"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/lib/service/resourcemanager', dest: '/service/resourcemanager', owner: 'root', group: 'root' }
+  when: "'resourcemanager' in group_names"
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** link for datanode daemontools service"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/lib/service/datanode', dest: '/service/datanode', owner: 'root', group: 'root' }
+  when: "'slavenodes' in group_names"
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** link for nodemanager daemontools service"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/lib/service/nodemanager', dest: '/service/nodemanager', owner: 'root', group: 'root' }
+  when: "'slavenodes' in group_names"
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** link for regionserver daemontools service"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/lib/service/regionserver', dest: '/service/regionserver', owner: 'root', group: 'root' }
+  when: "'slavenodes' in group_names"
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+
+#
+# set ownership in dt log area
+#
+- name: "** nox ** check if dt log is present"
+  action: stat path=/service/{{ item.service }}/log/{{ item.src }}
+  with_items:
+    - { service: 'namenode', src: 'main' }
+    - { service: 'namenode', src: 'main/current' }
+  register: dtlog
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+##- name: "** nox ** rename old conf dir if present"
+##  action: shell mv /apache/{{ item.item }} /apache/{{ item.item }}.BAK.$(date +%Y-%m-%d.%H%M%S)
+##  with_items: confdir.results
+##  when: item.stat.isdir is defined and item.stat.isdir == true
+##  tags:
+##    - setup-dt-links
+##    - enable-hdp-lw-hadoop
+
+- name: "** nox ** set ownership for daemontools service logs"
+  action: file path=/service/{{ item.item.service }}/log/{{ item.item.src }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }} 
+  with_items:
+  with_items: dtlog.results
+  when: item.stat.isdir is defined and item.stat.isdir == true
+  tags:
+    - setup-dt-links
+    - enable-hdp-lw-hadoop
+
+##    - { service: 'namenode', src: 'main', owner: 'hadoop', group: 'root', mode: '755' }
+##    - { service: 'namenode', src: 'main/current', owner: 'hadoop', group: 'hadoop', mode: '644' }
+##    - { service: 'secondarynamenode', src: 'main', owner: 'hadoop', group: 'root', mode: '755' }
+##    - { service: 'secondarynamenode', src: 'main/current', owner: 'hadoop', group: 'hadoop', mode: '644' }
+##    - { service: 'resourcemanager', src: 'main', owner: 'hadoop', group: 'root', mode: '755' }
+##    - { service: 'resourcemanager', src: 'main/current', owner: 'hadoop', group: 'hadoop', mode: '644' }
+##    - { service: 'zookeeper', src: 'main', owner: 'hadoop', group: 'root', mode: '755' }
+##    - { service: 'zookeeper', src: 'main/current', owner: 'hadoop', group: 'hadoop', mode: '644' }
+##    - { service: 'hbase-master', src: 'main', owner: 'hadoop', group: 'root', mode: '755' }
+##    - { service: 'hbase-master', src: 'main/current', owner: 'hadoop', group: 'hadoop', mode: '644' }
+##    - { service: 'regionserver', src: 'main', owner: 'hadoop', group: 'root', mode: '755' }
+##    - { service: 'regionserver', src: 'main/current', owner: 'hadoop', group: 'hadoop', mode: '644' }
+##    - { service: 'datanode', src: 'main', owner: 'hadoop', group: 'root', mode: '755' }
+##    - { service: 'datanode', src: 'main/current', owner: 'hadoop', group: 'hadoop', mode: '644' }
+##    - { service: 'nodemanager', src: 'main', owner: 'hadoop', group: 'root', mode: '755' }
+##    - { service: 'nodemanager', src: 'main/current', owner: 'hadoop', group: 'hadoop', mode: '644' }
+
+

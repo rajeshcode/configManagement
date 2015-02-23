@@ -1,0 +1,126 @@
+---
+
+- name: "** nox ** copy ebay-hdp-hadoop2 repo file"
+  action: copy src={{ item }} dest=/etc/yum.repos.d/ebay-hdp-hadoop2-x86_64.repo owner=root group=root mode=0644
+  with_items:
+    - /var/lib/ansible/hadoop-ansible/playbooks/files/ebay-hdp-hadoop2-x86_64.repo
+  tags: install-ebay-hdp2-hadoop
+
+- name: "** nox ** yum clean all on repo"
+  action: command yum clean all
+  tags: install-ebay-hdp2-hadoop
+
+##- name: "** nox ** check if old hdp2 installation present"
+##  action: stat=/apache/{{ item }}
+##  with_items:
+##    - hive-0.12.0.2.0.6.0-76
+##    - zookeeper-3.4.5.2.0.6.0-76
+##    - oozie-4.0.0.2.0.6.0-76
+##    - pig-0.12.0.2.0.6.0-76
+##    - hbase-0.96.0.2.0.6.0-76-hadoop2
+##    - hadoop-2.2.0.2.0.6.0-76
+##  register: oldinstalldir
+##  tags: install-ebay-hdp2-hadoop
+
+# hive
+- name: "** nox ** hive check if old hdp2 installation present"
+  action: stat path=/apache/hive-0.12.0.2.0.6.0-76
+  register: hivedir
+  tags: install-ebay-hdp2-hadoop
+  
+- name: "** nox ** hive backup old hdp2 installation" 
+  action: command mv /apache/hive-0.12.0.2.0.6.0-76 /apache/hive-0.12.0.2.0.6.0-76.BAK
+  when: hivedir.stat.isdir is defined and hivedir.stat.isdir == true
+
+# zookeeper
+- name: "** nox ** zookeeper check if old hdp2 installation present"
+  action: stat path=/apache/zookeeper-3.4.5.2.0.6.0-76
+  register: zoodir
+  tags: install-ebay-hdp2-hadoop
+
+- name: "** nox ** zookeeper backup old hdp2 installation"
+  action: command mv /apache/zookeeper-3.4.5.2.0.6.0-76 /apache/zookeeper-3.4.5.2.0.6.0-76.BAK
+  when: zoodir.stat.isdir is defined and zoodir.stat.isdir == true
+
+# oozie
+- name: "** nox ** oozie check if old hdp2 installation present"
+  action: stat path=/apache/oozie-4.0.0.2.0.6.0-76
+  register: ooziedir
+  tags: install-ebay-hdp2-hadoop
+
+- name: "** nox ** oozie backup old hdp2 installation"
+  action: command mv /apache/oozie-4.0.0.2.0.6.0-76 /apache/oozie-4.0.0.2.0.6.0-76.BAK
+  when: ooziedir.stat.isdir is defined and ooziedir.stat.isdir == true
+
+# pig
+- name: "** nox ** pig check if old hdp2 installation present"
+  action: stat path=/apache/pig-0.12.0.2.0.6.0-76
+  register: pigdir
+  tags: install-ebay-hdp2-hadoop
+
+- name: "** nox ** pig backup old hdp2 installation"
+  action: command mv /apache/pig-0.12.0.2.0.6.0-76 /apache/pig-0.12.0.2.0.6.0-76.BAK
+  when: pigdir.stat.isdir is defined and pigdir.stat.isdir == true
+
+# hbase
+- name: "** nox ** hbase check if old hdp2 installation present"
+  action: stat path=/apache/hbase-0.96.0.2.0.6.0-76-hadoop2
+  register: hbasedir
+  tags: install-ebay-hdp2-hadoop
+
+- name: "** nox ** hbase backup old hdp2 installation"
+  action: command mv /apache/hbase-0.96.0.2.0.6.0-76-hadoop2 /apache/hbase-0.96.0.2.0.6.0-76-hadoop2.BAK
+  when: hbasedir.stat.isdir is defined and hbasedir.stat.isdir == true
+
+
+# hadoop
+- name: "** nox ** hadoop check if old hdp2 installation present"
+  action: stat path=/apache/hadoop-2.2.0.2.0.6.0-76
+  register: hadoopdir
+  tags: install-ebay-hdp2-hadoop
+
+- name: "** nox ** hadoop backup old hdp2 installation"
+  action: command mv /apache/hadoop-2.2.0.2.0.6.0-76 /apache/hadoop-2.2.0.2.0.6.0-76.BAK
+  when: hadoopdir.stat.isdir is defined and hadoopdir.stat.isdir == true
+
+
+
+- name: "** nox ** remove old hdp2 hit-apache-hadoop pkgs"
+  action: yum name={{ item }} state=removed
+  with_items:
+    - hit-apache-hadoop-hadoop-2.2.0.2.0.6.0
+    - hit-apache-hadoop-hbase-0.96.0.2.0.6.0
+    - hit-apache-hadoop-oozie-4.0.0.2.0.6.0
+    - hit-apache-hadoop-hive-0.12.0.2.0.6.0
+    - hit-apache-hadoop-pig-0.12.0.2.0.6.0
+    - hit-apache-hadoop-zookeeper-3.4.5.2.0.6.0
+  tags: install-ebay-hdp2-hadoop
+
+
+# install ebay-hdp2-lzo-native-1.0-1 lzo libraries after enabling HDP2 build 
+- name: "** nox ** install ebay-hdp-lw-hadoop pkgs"
+  action: yum disablerepo=hit-hadoop-x86_64 enablerepo=ebay-hdp-hadoop2-x86_64 pkg={{ item }} state=installed
+  with_items:
+    - ebay-hdp-lw-hive-0.12.0.2.0.6.0-38
+    - ebay-hdp-lw-oozie-4.0.0.2.0.6.0-38
+    - ebay-hdp-lw-hbase-0.96.0.2.0.6.0-38
+    - ebay-hdp-lw-hadoop-2.2.0.2.0.6.0-38
+    - ebay-hdp-lw-zookeeper-3.4.5.2.0.6.0-38
+    - ebay-hdp-lw-pig-0.12.0.2.0.6.0-38
+    - ebay-hdp-lw-hcatalog-0.12.0.2.0.6.0-38
+  tags: install-ebay-hdp2-hadoop
+
+
+- name: "** nox ** chown hdp2 installation"
+  action: command chown -R hadoop:hadoop /apache/{{ item }}
+  with_items: 
+    - hcatalog-0.11.0.1.3.0.0-107
+    - hive-0.12.0.2.0.6.0-38
+    - oozie-4.0.0.2.0.6.0-38
+    - hbase-0.96.0.2.0.6.0-38-hadoop2
+    - hadoop-2.2.0.2.0.6.0-38
+    - zookeeper-3.4.5.2.0.6.0-38
+    - pig-0.12.0.2.0.6.0-38
+    - hcatalog-0.12.0.2.0.6.0-38
+  tags: install-ebay-hdp2-hadoop
+

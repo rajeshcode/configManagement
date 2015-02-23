@@ -1,0 +1,14 @@
+cookie-path=/
+use-verbose-error-messages=false
+cipher-suite=2
+obfuscate-password=true
+session-cookie=true
+password=5yAHuoPAqCrLdJDauINovQ==
+token-name=otknqahadoophmaster
+cookie-domain=.ebay.com
+token-notbefore-tolerance=300
+token-renewuntil=43200
+use-sunjce=false
+secure-cookie=true
+token-lifetime=300
+use-cookie=true

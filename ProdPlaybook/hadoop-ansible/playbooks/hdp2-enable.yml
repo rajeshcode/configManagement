@@ -1,0 +1,274 @@
+---
+
+- name: "** nox ** unlink any hadoop related links from previous installation"
+  action: file path={{ item }} state=absent
+  with_items:
+    - /apache/hbase
+    - /apache/hive
+    - /apache/zookeeper
+    - /apache/oozie-server
+    - /apache/oozie
+    - /apache/pig
+    - /apache/hadoop
+    - /apache/hcatalog
+  tags: enable-hdp-lw-hadoop
+
+
+#- { src: '/apache/hbase-0.96.0.2.0.6.0-38-hadoop2', dest: '/apache/hbase', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/apache/hive-0.12.0.2.0.6.0-38', dest: '/apache/hive', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/apache/hcatalog-0.12.0.2.0.6.0-38', dest: '/apache/hcatalog', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/apache/zookeeper-3.4.5.2.0.6.0-38', dest: '/apache/zookeeper', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/apache/oozie-4.0.0.2.0.6.0-38', dest: '/apache/oozie-server', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/apache/oozie-4.0.0.2.0.6.0-38/oozie-client-4.0.0.2.0.6.0-38', dest: '/apache/oozie', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/apache/pig-0.12.0.2.0.6.0-38', dest: '/apache/pig', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/apache/hadoop-2.2.0.2.0.6.0-38', dest: '/apache/hadoop', owner: 'root', group: 'hadoop' }
+- name: "** nox ** create links for hadoop sfw directories"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link
+  with_items:
+    - { src: '/apache/{{ hdp2_hbase }}', dest: '/apache/hbase', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_hive }}', dest: '/apache/hive', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_hcatalog }}', dest: '/apache/hcatalog', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_zookeeper }}', dest: '/apache/zookeeper', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_ooziesrv }}', dest: '/apache/oozie-server', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_oozie }}', dest: '/apache/oozie', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_pig }}', dest: '/apache/pig', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/{{ hdp2_hadoop }}', dest: '/apache/hadoop', owner: 'root', group: 'hadoop' }
+  tags: enable-hdp-lw-hadoop
+
+- name: "** nox ** ensure additional apache hadoop directories are present"
+  action: file path={{ item.src }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }} state=directory
+  with_items:
+    - { src: '/apache', owner: 'root', group: 'hadoop', mode: '0775' }
+    - { src: '/apache/jsvc', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { src: '/apache/lib', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { src: '/apache/hadoop/lib', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { src: '/apache/hadoop/pids', owner: 'hadoop', group: 'hadoop', mode: '0755' }
+    - { src: '/var/run/hadoop-hdfs', owner: 'hadoop', group: 'root', mode: '0755' }
+  tags: 
+    - enable-hdp-lw-hadoop
+    - deploy-hdp2-configs
+
+
+# install lzo 
+# build-61 of hdp2 software includes lzo libraries in hadoop rpm 
+#
+#- name: "** nox ** install ebay hdp2 lzo pkg"
+#  action: yum disablerepo=hit-hadoop-x86_64 enablerepo=ebay-hdp-hadoop2-x86_64 pkg={{ item }} state=installed
+#  with_items:
+#    - ebay-hdp2-lzo-native-1.0
+#  tags: enable-hdp-lw-hadoop
+
+- name: "** nox ** chown hdp2 lzo installation"
+  action: file path={{ item.src }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }}
+  with_items:
+    - { src: '/apache/hadoop/lib/hadoop-lzo-0.5.0.jar', owner: 'hadoop', group: 'hadoop', mode: '644' }
+    - { src: '/apache/hadoop/lib/native/libgplcompression.so.0.0.0', owner: 'hadoop', group: 'hadoop', mode: '664' }
+    - { src: '/apache/hadoop/lib/native/libgplcompression.so.0', owner: 'hadoop', group: 'hadoop', mode: '664' }
+    - { src: '/apache/hadoop/lib/native/libgplcompression.so', owner: 'hadoop', group: 'hadoop', mode: '664' }
+    - { src: '/apache/hadoop/lib/native/libgplcompression.la', owner: 'hadoop', group: 'hadoop', mode: '664' }
+    - { src: '/apache/hadoop/lib/native/libgplcompression.a', owner: 'hadoop', group: 'hadoop', mode: '664' }
+  tags: enable-hdp-lw-hadoop
+
+
+# install libsnappy softlink
+# libsnappy.so file included in hdp2 hadoop rpm
+##- name: "** nox ** create link for libsnappy"
+##  action: file src={{ item.src }} dest={{ item.dest }} owner=hadoop group=hadoop state=link
+##  with_items:
+##    - { src: '/usr/lib64/libsnappy.so', dest: '/apache/hadoop/lib/native/Linux-amd64-64/libsnappy.so' }
+##  tags: enable-hdp-lw-hadoop
+
+
+- name: "** nox ** create link for bigtop-jsvc"
+  action: file src={{ item.src }} dest={{ item.dest }} owner=hadoop group=hadoop state=link force=yes
+  with_items:
+    - { src: '/usr/libexec/bigtop-utils/jsvc', dest: '/apache/jsvc/jsvc' }
+  tags: enable-hdp-lw-hadoop
+
+##- name: "** nox ** rename /apache/hbase/lib/native directory if it is not a soft link"
+##  action: shell test -L /apache/hbase/lib/native || mv /apache/hbase/lib/native /apache/hbase/lib/native.$(date +%F.%T)
+##  tags: enable-hdp-lw-hadoop
+
+- name: "** nox ** check if /apache/hbase/lib/native dir is present"
+  action: stat path=/apache/hbase/lib/native
+  register: hbasenativedir
+  tags: enable-hdp-lw-hadoop
+
+- name: "** nox ** rename /apache/hbase/lib/native dir if present"
+  action: shell mv {{ item.item }} {{ item.item }}.$(date +%F.%T)
+  with_items: hbasenativedir.results
+  when: item.stat.isdir is defined and item.stat.isdir == true
+  tags: enable-hdp-lw-hadoop
+
+- name: "** nox ** create link for hadoop and hbase ancillary files and directories"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/apache/hadoop/lib/native', dest: '/apache/hbase/lib/native', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/hadoop/lib/hadoop-lzo-0.5.0.jar', dest: '/apache/hbase/lib/hadoop-lzo-0.5.0.jar', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/apache/hadoop/lib/hadoop-lzo-0.5.0.jar', dest: '/apache/hadoop/share/hadoop/common/lib/hadoop-lzo-0.5.0.jar', owner: 'hadoop', group: 'hadoop' }
+  tags: enable-hdp-lw-hadoop
+
+
+
+
+#
+# link config files
+#
+- name: "** nox ** check if old conf dir is present"
+  action: stat path=/apache/{{ item }}
+  with_items:
+    - zookeeper/conf
+    - hbase/conf
+    - hive/conf
+    - pig/conf
+    - oozie/conf
+    - oozie-server/conf
+    - hcatalog/conf
+    - hadoop/conf
+    - hadoop/etc/hadoop
+  register: confdir
+  tags:
+    - hadoop-conf-dir-check
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** rename old conf dir if present"
+  action: shell mv /apache/{{ item.item }} /apache/{{ item.item }}.BAK.$(date +%F.%T)
+  with_items: confdir.results
+  when: item.stat.isdir is defined and item.stat.isdir == true
+  tags:
+    - hadoop-conf-dir-check
+    - enable-hdp-lw-hadoop
+
+# conf dirs
+- name: "** nox ** create link for hadoop ancillary log directories on slavenodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/var/log/hadoop/hadoop', dest: '/apache/hadoop/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/hbase', dest: '/apache/hbase/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/zookeeper', dest: '/apache/zookeeper/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/hive', dest: '/apache/hive/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/pig', dest: '/apache/pig/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/oozie-server', dest: '/apache/oozie-server/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/oozie', dest: '/apache/oozie/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/var/log/hadoop/hcatalog', dest: '/apache/hcatalog/logs', owner: 'hadoop', group: 'hadoop' }
+  when: "'slavenodes' in group_names"
+  tags:
+    - hadoop-logs
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** create link for hadoop ancillary log directories on masternodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '/hadoop/logs', dest: '/var/log/hadoop', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hadoop', dest: '/apache/hadoop/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hbase', dest: '/apache/hbase/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/zookeeper', dest: '/apache/zookeeper/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hive', dest: '/apache/hive/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/pig', dest: '/apache/pig/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/oozie-server', dest: '/apache/oozie-server/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/oozie', dest: '/apache/oozie/logs', owner: 'hadoop', group: 'hadoop' }
+    - { src: '/hadoop/logs/hcatalog', dest: '/apache/hcatalog/logs', owner: 'hadoop', group: 'hadoop' }
+  when: "'masternodes' in group_names"
+  tags:
+    - hadoop-logs
+    - enable-hdp-lw-hadoop
+
+
+#- { src: '/etc/hdp/nox-hdp2/hadoop/conf', dest: '/apache/hadoop/conf', owner: 'root', group: 'hadoop' }
+#- { src: '/etc/hdp/nox-hdp2/hbase/conf', dest: '/apache/hbase/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/etc/hdp/nox-hdp2/zookeeper/conf', dest: '/apache/zookeeper/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/etc/hdp/nox-hdp2/hive/conf', dest: '/apache/hive/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/etc/hdp/nox-hdp2/pig/conf', dest: '/apache/pig/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/etc/hdp/nox-hdp2/oozie-server/conf', dest: '/apache/oozie-server/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/etc/hdp/nox-hdp2/oozie/conf', dest: '/apache/oozie/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/etc/hdp/nox-hdp2/hcatalog/conf', dest: '/apache/hcatalog/conf', owner: 'hadoop', group: 'hadoop' }
+#
+- name: "** nox ** create link for hadoop config on slavenodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '{{ hdp2_conf_dir_dn }}/hadoop/conf', dest: '/apache/hadoop/conf', owner: 'root', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_dn }}/hbase/conf', dest: '/apache/hbase/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_dn }}/zookeeper/conf', dest: '/apache/zookeeper/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_dn }}/hive/conf', dest: '/apache/hive/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_dn }}/pig/conf', dest: '/apache/pig/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_dn }}/oozie-server/conf', dest: '/apache/oozie-server/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_dn }}/oozie/conf', dest: '/apache/oozie/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_dn }}/hcatalog/conf', dest: '/apache/hcatalog/conf', owner: 'hadoop', group: 'hadoop' }
+  when: "'slavenodes' in group_names"
+  tags: enable-hdp-lw-hadoop
+
+
+#- { src: '/ebay/hdp/nox-hdp2/hadoop/conf', dest: '/apache/hadoop/conf', owner: 'root', group: 'hadoop' }
+#- { src: '/ebay/hdp/nox-hdp2/hbase/conf', dest: '/apache/hbase/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/ebay/hdp/nox-hdp2/zookeeper/conf', dest: '/apache/zookeeper/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/ebay/hdp/nox-hdp2/hive/conf', dest: '/apache/hive/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/ebay/hdp/nox-hdp2/pig/conf', dest: '/apache/pig/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/ebay/hdp/nox-hdp2/oozie-server/conf', dest: '/apache/oozie-server/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/ebay/hdp/nox-hdp2/oozie/conf', dest: '/apache/oozie/conf', owner: 'hadoop', group: 'hadoop' }
+#- { src: '/ebay/hdp/nox-hdp2/hcatalog/conf', dest: '/apache/hcatalog/conf', owner: 'hadoop', group: 'hadoop' }
+#
+- name: "** nox ** create link for hadoop config on masternodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '{{ hdp2_conf_dir_en }}/hadoop/conf', dest: '/apache/hadoop/conf', owner: 'root', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_en }}/hbase/conf', dest: '/apache/hbase/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_en }}/zookeeper/conf', dest: '/apache/zookeeper/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_en }}/hive/conf', dest: '/apache/hive/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_en }}/pig/conf', dest: '/apache/pig/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_en }}/oozie-server/conf', dest: '/apache/oozie-server/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_en }}/oozie/conf', dest: '/apache/oozie/conf', owner: 'hadoop', group: 'hadoop' }
+    - { src: '{{ hdp2_conf_dir_en }}/hcatalog/conf', dest: '/apache/hcatalog/conf', owner: 'hadoop', group: 'hadoop' }
+  when: "'masternodes' in group_names"
+  tags: enable-hdp-lw-hadoop
+
+
+
+# new hdp2 hadoop conf dir location
+- name: "** nox ** check if new hdp2 conf dir is present"
+  action: stat path=/apache/hadoop/etc/hadoop
+  register: hdp2confdir
+  tags:
+    - hadoop-hdp2-conf-dir-check
+    - enable-hdp-lw-hadoop
+
+- name: "** nox ** rename new hdp2 conf dir if present"
+  action: shell mv /apache/hadoop/etc/{{ item.item }} /apache/hadoop/etc/{{ item.item }}.BAK.$(date +%F.%T)
+  with_items: hdp2confdir.results
+  when: item.stat.isdir is defined and item.stat.isdir == true
+  tags:
+    - hadoop-hdp2-conf-dir-check
+    - enable-hdp-lw-hadoop
+
+
+#- { src: '/ebay/hdp/nox-hdp2/hadoop/conf', dest: '/apache/hadoop/etc/hadoop', owner: 'root', group: 'hadoop' }
+# link to hdp2 hadoop conf
+#
+- name: "** nox ** create link for hdp2 hadoop config on masternodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '{{ hdp2_conf_dir_en }}/hadoop/conf', dest: '/apache/hadoop/etc/hadoop', owner: 'root', group: 'hadoop' }
+  when: "'masternodes' in group_names"
+  tags: enable-hdp-lw-hadoop
+
+
+#- { src: '/etc/hdp/nox-hdp2/hadoop/conf', dest: '/apache/hadoop/etc/hadoop', owner: 'root', group: 'hadoop' }
+#
+- name: "** nox ** create link for hdp2 hadoop config on slavenodes"
+  action: file src={{ item.src }} dest={{ item.dest }} owner={{ item.owner }} group={{ item.group }} state=link force=yes
+  with_items:
+    - { src: '{{ hdp2_conf_dir_dn }}/hadoop/conf', dest: '/apache/hadoop/etc/hadoop', owner: 'root', group: 'hadoop' }
+  when: "'slavenodes' in group_names"
+  tags: enable-hdp-lw-hadoop
+
+##
+#- { src: '/apache/hadoop-2.2.0.2.0.6.0-38', owner: 'root', group: 'hadoop', mode: '0775' }
+- name: "** nox ** chown hdp2 container-executor file"
+  action: file path={{ item.src }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }}
+  with_items:
+    - { src: '/apache/hadoop/bin/container-executor', owner: 'root', group: 'hadoop', mode: '6050' }
+    - { src: '/apache/hadoop/conf/container-executor.cfg', owner: 'root', group: 'hadoop', mode: '0400' }
+    - { src: '/apache/{{ hdp2_hadoop }}', owner: 'root', group: 'hadoop', mode: '0775' }
+    - { src: '/apache/hadoop/etc', owner: 'root', group: 'hadoop', mode: '0775' }
+  tags: 
+    - enable-hdp-lw-hadoop
+    - deploy-hdp2-configs
