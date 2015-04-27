@@ -16,15 +16,11 @@
 
 <property>
   <name>javax.jdo.option.ConnectionUserName</name>
-  <value>hiveuser</value>
+  <value>vv</value>
   <description>username to use against metastore database</description>
 </property>
 
-<property>
-  <name>javax.jdo.option.ConnectionPassword</name>
-  <value>B33fyum2</value>
-  <description>password to use against metastore database</description>
-</property>
+
 <property>
 <name>mapreduce.job.queuename</name>
 <value>hdmi-technology</value>
