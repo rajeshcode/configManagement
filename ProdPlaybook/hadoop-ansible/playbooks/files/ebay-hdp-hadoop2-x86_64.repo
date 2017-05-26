@@ -1,5 +1,0 @@
-[ebay-hdp-hadoop2-x86_64]
-name=HDP2-LW
-baseurl=http://installsvc.vip.phx.ebay.com/packages/hs/hdp2-lw/centos/$releasever/
-enabled=1
-gpgcheck=0

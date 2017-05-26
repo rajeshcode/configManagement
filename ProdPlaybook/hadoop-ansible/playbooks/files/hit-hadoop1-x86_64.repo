@@ -1,5 +1,0 @@
-[hit-hadoop1-x86_64]
-name=HDP1 sofware repository
-baseurl=http://installsvc.vip.phx.ebay.com/packages/hit/hadoop/centos/$releasever/
-enabled=1
-gpgcheck=0
